@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f2">
+  <meta name="description" content="Panel de seguimiento y gestión de prácticas académicas">
+  <title>Prácticas · Panel de gestión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Prácticas, inicio"><span class="brand-mark">p<span>.</span></span><span>prácticas<span class="brand-light">/udi</span></span></a>
+      <div class="workspace-label">ESPACIO ACADÉMICO</div>
+      <div class="program-card"><span class="program-icon">⌂</span><span><b>Licenciatura</b><small>Programa académico</small></span><span class="chevron">⌄</span></div>
+      <div class="nav-label">GESTIÓN</div>
+      <nav class="nav-list" aria-label="Navegación principal">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">◫</span>Resumen</button>
+        <button class="nav-item" data-view="students"><span class="nav-icon">♙</span>Estudiantes<span class="nav-count" id="student-nav-count">0</span></button>
+        <button class="nav-item" data-view="institutions"><span class="nav-icon">⌂</span>Instituciones</button>
+        <button class="nav-item" data-view="practices"><span class="nav-icon">▤</span>Asignaciones</button>
+        <button class="nav-item" data-view="hours"><span class="nav-icon">◷</span>Horas y seguimiento</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="semester-card"><span class="semester-dot"></span><span><b>Periodo 2026–2</b><small>En curso · Quinto semestre</small></span></div>
+        <div class="user-card"><div class="avatar avatar-sidebar">CP</div><span><b>Coordinación</b><small>Coordinador/a de práctica</small></span><button class="user-menu" aria-label="Opciones de usuario">···</button></div>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="Abrir menú">☰</button><div class="breadcrumb">Gestión académica <span>/</span> <b id="breadcrumb-current">Resumen</b></div><div class="topbar-right"><span class="sync-status"><i></i>Datos actualizados</span><button class="icon-button" aria-label="Notificaciones">♧<span class="notification-dot"></span></button><div class="avatar">CP</div></div></header>
+      <section class="page-wrap">
+        <div class="page-heading"><div><div class="eyebrow" id="page-eyebrow">VISTA GENERAL <span>·</span> PERIODO 2026–2</div><h1 id="page-title">Buenos días, coordinación <span class="wave">✳</span></h1><p id="page-subtitle">Aquí tienes el estado actual de las prácticas del programa.</p></div><div class="heading-actions"><button class="button button-secondary" id="export-button"><span>↓</span> Exportar</button><button class="button button-primary" id="add-button"><span>＋</span> Nueva asignación</button></div></div>
+        <div id="dashboard-view">
+          <section class="stats-grid" aria-label="Indicadores del periodo">
+            <article class="stat-card"><div class="stat-top"><span>Estudiantes en práctica</span><span class="stat-icon tint-purple">♙</span></div><div class="stat-value" id="stat-students">—</div><div class="stat-foot"><span class="stat-note">Registros activos</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Horas registradas</span><span class="stat-icon tint-blue">◷</span></div><div class="stat-value"><span id="stat-hours">—</span><small> h</small></div><div class="stat-foot"><span class="stat-note">De 160 h requeridas</span><span class="stat-progress"><i id="hours-progress"></i></span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Instituciones aliadas</span><span class="stat-icon tint-green">⌂</span></div><div class="stat-value" id="stat-institutions">—</div><div class="stat-foot"><span class="stat-note">Con convenio registrado</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Pendientes de seguimiento</span><span class="stat-icon tint-orange">◷</span></div><div class="stat-value" id="stat-pending">—</div><div class="stat-foot"><span class="stat-note">Requieren revisión</span></div></article>
+          </section>
+          <div class="dashboard-grid">
+            <section class="panel progress-panel"><div class="panel-heading"><div><h2>Avance de horas</h2><p>Cumplimiento agregado del periodo</p></div><button class="more-button" aria-label="Más opciones">···</button></div><div class="chart-wrap"><div class="chart-summary"><strong id="chart-percent">0%</strong><span>del total requerido</span><div class="legend"><span><i class="legend-current"></i>Registradas</span><span><i class="legend-remaining"></i>Por completar</span></div></div><div class="bar-chart" id="hours-chart" aria-label="Gráfico de horas"></div></div><div class="chart-footer"><span><i class="footer-dot"></i> Meta del periodo</span><b>160 h / estudiante</b></div></section>
+            <section class="panel status-panel"><div class="panel-heading"><div><h2>Estado de prácticas</h2><p>Distribución de asignaciones activas</p></div><button class="more-button" aria-label="Más opciones">···</button></div><div class="status-list" id="status-list"></div><div class="status-foot"><span class="status-ring">◉</span><span id="status-foot-text">Resumen del periodo académico</span></div></section>
+          </div>
+          <section class="panel activity-panel"><div class="panel-heading"><div><h2>Asignaciones recientes</h2><p>Seguimiento de las últimas prácticas registradas</p></div><button class="text-button" data-goto="practices">Ver todas <span>→</span></button></div><div class="table-scroll"><table><thead><tr><th>ESTUDIANTE</th><th>INSTITUCIÓN</th><th>PROGRESO</th><th>ESTADO</th><th></th></tr></thead><tbody id="recent-table"></tbody></table></div></section>
+          <section class="panel activity-panel node-services"><div class="panel-heading"><div><h2>Servicios Node.js</h2><p>Ejemplos básicos del corte implementados en el prototipo</p></div><button class="button button-secondary button-small" id="service-demo">Probar API</button></div><div class="service-grid" id="service-grid"></div><pre class="service-output" id="service-output" aria-live="polite">Selecciona «Probar API» para consultar los cinco módulos nativos documentados.</pre></section>
+        </div>
+        <section class="panel management-panel" id="management-view" hidden><div class="panel-heading"><div><h2 id="table-title">Registros</h2><p id="table-subtitle"></p></div><label class="search-field"><span>⌕</span><input type="search" id="search-input" placeholder="Buscar registros…" aria-label="Buscar registros"></label></div><div class="table-scroll"><table><thead id="management-head"></thead><tbody id="management-body"></tbody></table><div class="empty-state" id="empty-state" hidden><span class="empty-icon">▤</span><strong>No hay registros todavía</strong><p>Agrega el primer registro para comenzar el seguimiento.</p><button class="button button-primary button-small" id="empty-add">＋ Agregar registro</button></div></div><div class="table-footer"><span id="record-count">0 registros</span><span class="prototype-label"><i></i> Prototipo inicial</span></div></section>
+        <footer class="page-footer"><span>Gestión de Prácticas Académicas <span>·</span> Prototipo funcional</span><span>Ingeniería de Sistemas <span>·</span> 2026–2</span></footer>
+      </section>
+    </main>
+  </div>
+  <dialog class="form-dialog" id="record-dialog"><form id="record-form" method="dialog"><div class="dialog-heading"><div><span class="dialog-eyebrow">GESTIÓN DE PRÁCTICAS</span><h2 id="dialog-title">Nuevo registro</h2></div><button class="dialog-close" type="button" id="dialog-close" aria-label="Cerrar">×</button></div><div class="form-fields" id="form-fields"></div><div class="dialog-actions"><button class="button button-secondary" type="button" id="cancel-button">Cancelar</button><button class="button button-primary" type="submit">Guardar registro <span>→</span></button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
