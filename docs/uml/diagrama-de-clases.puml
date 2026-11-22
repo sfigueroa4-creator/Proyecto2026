@@ -1,0 +1,116 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FBFCF9
+title Arquitectura hexagonal · Gestor de prácticas académicas
+
+package "Adaptadores de entrada" {
+  class ExpressRoutes <<HTTP>>
+  class RecordsController <<Controller>> {
+    +list()
+    +create()
+    +update()
+    +remove()
+  }
+  class AuthMiddleware <<Middleware>>
+  class EvidenceRoutes <<HTTP>>
+}
+package "Aplicación" {
+  class RecordsService <<Use cases>> {
+    +listRecords()
+    +createRecord()
+    +updateRecord()
+    +deleteRecord()
+    +generateReports()
+  }
+  class UsersService <<Use cases>> {
+    +createUser()
+    +authenticateUser()
+    +resolveToken()
+    +revokeToken()
+  }
+  class EvidenceService <<Use cases>> {
+    +list()
+    +upload()
+    +getDownload()
+  }
+  class HealthService <<Use case>> {
+    +check()
+  }
+}
+package "Dominio independiente" {
+  class RecordRules <<Domain>> {
+    +validateInput()
+    +resourceConfig()
+    +roleNames
+  }
+}
+package "Puertos de salida" {
+  interface RecordsRepository {
+    +get(resource, id)
+    +list(resource)
+    +find(resource, criteria)
+    +insert(resource, record)
+    +update(resource, id, patch)
+    +delete(resource, id)
+  }
+  interface UsersRepository
+  interface EvidenceStorage {
+    +save(file)
+    +remove(name)
+    +pathFor(name)
+  }
+  interface PasswordHasher {
+    +hash(password)
+    +compare(password, hash)
+  }
+  interface TokenService {
+    +issue(userId)
+    +verify(token)
+  }
+  interface DatabaseHealthPort {
+    +ping()
+  }
+}
+package "Adaptadores de salida" {
+  class MongoRecordsRepository <<Adapter>>
+  class MongoUsersRepository <<Adapter>>
+  class LocalEvidenceStorage <<Adapter>>
+  class BcryptPasswordHasher <<Adapter>>
+  class JwtTokenService <<Adapter>>
+  class MongoHealthRepository <<Adapter>>
+  database MongoDB
+  folder "uploads/" as FileStore
+}
+class CompositionRoot <<DI>> {
+  +createServices()
+}
+
+ExpressRoutes --> RecordsController
+RecordsController --> RecordsService
+AuthMiddleware --> UsersService
+EvidenceRoutes --> EvidenceService
+RecordsService ..> RecordRules
+RecordsService --> RecordsRepository
+RecordsService --> EvidenceStorage : borrado dependiente
+UsersService --> UsersRepository
+UsersService --> PasswordHasher
+UsersService --> TokenService
+EvidenceService --> RecordsRepository
+EvidenceService --> RecordsService
+EvidenceService --> EvidenceStorage
+HealthService --> DatabaseHealthPort
+
+MongoRecordsRepository ..|> RecordsRepository
+MongoUsersRepository ..|> UsersRepository
+LocalEvidenceStorage ..|> EvidenceStorage
+BcryptPasswordHasher ..|> PasswordHasher
+JwtTokenService ..|> TokenService
+MongoHealthRepository ..|> DatabaseHealthPort
+MongoRecordsRepository --> MongoDB
+MongoUsersRepository --> MongoDB
+MongoHealthRepository --> MongoDB
+LocalEvidenceStorage --> FileStore
+CompositionRoot ..> RecordsService : inyecta adaptadores
+CompositionRoot ..> UsersService
+CompositionRoot ..> EvidenceService
+@enduml

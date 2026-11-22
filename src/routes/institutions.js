@@ -1,2 +1,5 @@
 import { resourceRouter } from './resource.routes.js';
-export default resourceRouter('institutions');
+
+export default function createInstitutionsRouter(recordsService) {
+  return resourceRouter('institutions', recordsService);
+}

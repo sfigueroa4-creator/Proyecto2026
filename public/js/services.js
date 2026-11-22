@@ -16,7 +16,9 @@ export function renderServiceCards() {
 export async function runServiceDemo() {
   serviceOutput.textContent = 'Consultando API…';
   try {
-    const response = await fetch('/api/services?demo=1');
+    const response = await fetch('/api/services?demo=1', {
+      headers: { Authorization: 'Bearer ' + sessionStorage.getItem('practicas:token') }
+    });
     if (!response.ok) throw new Error('Inicia el servidor Express para ejecutar los ejemplos Node.js.');
     const data = await response.json();
     serviceOutput.textContent = JSON.stringify(data, null, 2);

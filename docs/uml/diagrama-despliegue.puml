@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FBFCF9
+title Diagrama de despliegue · Desarrollo y destino
+
+node "Equipo cliente" as Client {
+  artifact "Navegador web\nHTML/CSS/JavaScript" as Browser
+}
+
+node "Servidor de aplicación\nNode.js 20+ / Express" as App {
+  artifact "API Express · adaptador HTTP\naplicación hexagonal" as Api
+  folder "uploads/\nalmacenamiento privado persistente" as Uploads
+}
+
+database "MongoDB 7+\nBase gestor_practicas" as DB {
+  artifact "students · institutions · practices"
+  artifact "hours · visits · validations"
+  artifact "users · evidence · counters"
+}
+
+Browser --> Api : HTTPS / API JSON\nJWT Bearer
+Api --> DB : MongoDB URI / TLS
+Api --> Uploads : lectura/escritura autorizada
+
+note right of DB
+  En desarrollo:
+  docker compose up -d mongodb
+  publica el puerto solo en loopback
+  y conserva datos en un volumen local.
+  En producción: autenticación, TLS,
+  red privada y respaldo externo.
+end note
+@enduml

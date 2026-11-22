@@ -1,2 +1,5 @@
 import { resourceRouter } from './resource.routes.js';
-export default resourceRouter('students');
+
+export default function createStudentsRouter(recordsService) {
+  return resourceRouter('students', recordsService);
+}

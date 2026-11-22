@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor #FBFCF9
+title Secuencia · Asignación con persistencia MongoDB
+actor Coordinador
+participant "Interfaz web" as UI
+participant "AuthMiddleware" as Auth
+participant "PracticesController" as Controller
+participant "RecordsModel" as Model
+database MongoDB as DB
+
+Coordinador -> UI : Completa asignación
+UI -> Controller : POST /api/practices + JWT
+Controller -> Auth : Verifica identidad y rol
+Auth --> Controller : Usuario autorizado
+Controller -> Model : validateInput + validateReferences
+Model -> DB : find student / institution
+DB --> Model : Documentos relacionados
+Model -> DB : increment counter + insert practice
+DB --> Model : ID asignado
+Model --> Controller : practiceId
+Controller --> UI : 201 Created
+UI -> Controller : GET /api/practices + JWT
+Controller -> Model : listRecords (scope)
+Model -> DB : find + resolve references / hours
+DB --> Model : registros de práctica
+Model --> UI : JSON con nombres y horas
+@enduml

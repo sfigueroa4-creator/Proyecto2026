@@ -1,0 +1,93 @@
+@startuml
+skinparam backgroundColor #FBFCF9
+skinparam linetype ortho
+hide circle
+hide methods
+hide stereotypes
+title Modelo conceptual de documentos · MongoDB
+
+entity "users" as users {
+  * _id : int
+  --
+  * email : string <<unique>>
+  * role : enum
+  * password_hash : string
+  profile_id : int?
+}
+entity "students" as students {
+  * _id : int
+  --
+  * code : string <<unique>>
+  * full_name : string
+  * email : string <<unique>>
+  semester : int
+  status : enum
+  user_id : int?
+}
+entity "institutions" as institutions {
+  * _id : int
+  --
+  * name : string <<unique>>
+  * city : string
+  agreement_status : enum
+  user_id : int?
+}
+entity "practices" as practices {
+  * _id : int
+  --
+  * student_id : int <<reference>>
+  * institution_id : int <<reference>>
+  advisor_user_id : int?
+  * start_date : string
+  status : enum
+}
+entity "hours" as hours {
+  * _id : int
+  --
+  * practice_id : int <<reference>>
+  * activity_date : string
+  * hours : number
+  * activity : string
+  review_status : enum
+}
+entity "visits" as visits {
+  * _id : int
+  --
+  * practice_id : int <<reference>>
+  * visit_date : string
+  * evaluation : enum
+}
+entity "validations" as validations {
+  * _id : int
+  --
+  * practice_id : int <<reference>>
+  attendance_status : enum
+  performance_status : enum
+  validated_by : int?
+}
+entity "evidence" as evidence {
+  * _id : int
+  --
+  * practice_id : int <<reference>>
+  hour_id : int?
+  * storage_name : string
+  * mime_type : string
+  * size : int
+}
+
+students ||--o{ practices : student_id
+institutions ||--o{ practices : institution_id
+practices ||--o{ hours : practice_id
+practices ||--o{ visits : practice_id
+practices ||--o{ validations : practice_id
+practices ||--o{ evidence : practice_id
+users |o--o| students : profile_id / user_id
+users |o--o| institutions : profile_id / user_id
+users |o--o{ practices : advisor_user_id
+hours |o--o{ evidence : hour_id
+note bottom
+  Relaciones lógicas por identificadores;
+  no son claves foráneas gestionadas por MongoDB.
+  La aplicación valida referencias y permisos.
+end note
+@enduml

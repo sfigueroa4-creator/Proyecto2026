@@ -1,0 +1,83 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam backgroundColor #FBFCF9
+title Componentes · Arquitectura hexagonal
+
+component "Navegador web\nHTML/CSS/JavaScript" as Browser
+
+package "Adaptadores de entrada · Express" {
+  component "Rutas REST" as Routes
+  component "Controladores HTTP" as Controllers
+  component "Middleware JWT/roles" as Auth
+}
+
+package "Aplicación · Casos de uso" {
+  component "RecordsService\nCRUD, permisos, informes" as Records
+  component "UsersService\ncuentas y sesiones" as Users
+  component "EvidenceService\ncarga/descarga autorizada" as Evidence
+  component "HealthService" as Health
+}
+
+package "Dominio" {
+  component "Reglas y validaciones\nsin dependencias externas" as Domain
+}
+
+package "Puertos de salida" {
+  interface "RecordsRepository" as RecordsPort
+  interface "UsersRepository" as UsersPort
+  interface "EvidenceStorage" as StoragePort
+  interface "PasswordHasher" as PasswordPort
+  interface "TokenService" as TokenPort
+  interface "DatabaseHealthPort" as HealthPort
+}
+
+package "Adaptadores de salida" {
+  component "MongoRecordsRepository" as MongoRecords
+  component "MongoUsersRepository" as MongoUsers
+  component "BcryptPasswordHasher" as Bcrypt
+  component "JwtTokenService" as Jwt
+  component "LocalEvidenceStorage" as LocalStorage
+  component "MongoHealthRepository" as MongoHealth
+}
+
+database MongoDB as DB
+folder "uploads/\nprivado" as Files
+component "Composition Root\ncreate-services.js" as Composition
+
+Browser --> Routes : HTTPS / JSON
+Routes --> Auth
+Routes --> Controllers
+Controllers --> Records
+Controllers --> Users
+Controllers --> Evidence
+Records ..> Domain
+Records --> RecordsPort
+Records --> StoragePort
+Users --> UsersPort
+Users --> PasswordPort
+Users --> TokenPort
+Evidence --> RecordsPort
+Evidence --> StoragePort
+Health --> HealthPort
+
+MongoRecords ..> RecordsPort
+MongoUsers ..> UsersPort
+Bcrypt ..> PasswordPort
+Jwt ..> TokenPort
+LocalStorage ..> StoragePort
+MongoHealth ..> HealthPort
+MongoRecords --> DB
+MongoUsers --> DB
+MongoHealth --> DB
+LocalStorage --> Files
+Composition ..> Records
+Composition ..> Users
+Composition ..> Evidence
+Composition ..> Health
+Composition ..> MongoRecords : inyección
+Composition ..> MongoUsers
+Composition ..> Bcrypt
+Composition ..> Jwt
+Composition ..> LocalStorage
+Composition ..> MongoHealth
+@enduml

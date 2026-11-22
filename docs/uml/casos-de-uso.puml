@@ -1,0 +1,84 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam backgroundColor #FBFCF9
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F0F6E9
+  BorderColor #4C7956
+  ArrowColor #66725F
+}
+
+actor "Administrador" as Admin
+actor "Coordinador/a" as Coordinador
+actor "Estudiante" as Estudiante
+actor "Docente asesor/a" as Asesor
+actor "Institución receptora" as Institucion
+actor "Director/a del programa" as Director
+
+rectangle "Gestor de Prácticas Académicas · Aplicación MongoDB" {
+  usecase "Iniciar y cerrar sesión" as UC01
+  usecase "Consultar panel e indicadores" as UC02
+  usecase "Gestionar estudiantes" as UC03
+  usecase "Gestionar instituciones y convenios" as UC04
+  usecase "Gestionar asignaciones de práctica" as UC05
+  usecase "Registrar horas y actividades" as UC06
+  usecase "Revisar registros de horas" as UC07
+  usecase "Adjuntar/consultar evidencias privadas" as UC08
+  usecase "Registrar visita y evaluación pedagógica" as UC09
+  usecase "Validar asistencia y desempeño" as UC10
+  usecase "Consultar y exportar informes" as UC11
+  usecase "Exportar listados a CSV" as UC12
+  usecase "Administrar cuentas y roles" as UC13
+}
+
+Admin -- UC01
+Admin -- UC02
+Admin -- UC03
+Admin -- UC04
+Admin -- UC05
+Admin -- UC07
+Admin -- UC08
+Admin -- UC09
+Admin -- UC10
+Admin -- UC11
+Admin -- UC12
+Admin -- UC13
+
+Coordinador -- UC01
+Coordinador -- UC02
+Coordinador -- UC03
+Coordinador -- UC04
+Coordinador -- UC05
+Coordinador -- UC07
+Coordinador -- UC08
+Coordinador -- UC09
+Coordinador -- UC10
+Coordinador -- UC11
+Coordinador -- UC12
+
+Estudiante -- UC01
+Estudiante -- UC06
+Estudiante -- UC08
+
+Asesor -- UC01
+Asesor -- UC05
+Asesor -- UC07
+Asesor -- UC09
+
+Institucion -- UC01
+Institucion -- UC05
+Institucion -- UC10
+
+Director -- UC01
+Director -- UC02
+Director -- UC11
+
+note bottom of UC11
+  Implementado en el código:
+  API REST, persistencia MongoDB,
+  roles, informes y CSV.
+  Validar todos los flujos con MongoDB
+  antes de declarar cobertura final.
+end note
+@enduml

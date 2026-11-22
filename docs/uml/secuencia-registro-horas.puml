@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor #FBFCF9
+title Secuencia · Horas, revisión y evidencia privada
+actor Estudiante
+actor "Docente asesor/a" as Asesor
+participant "Interfaz web" as UI
+participant "API Express" as API
+participant "AuthMiddleware" as Auth
+participant "RecordsModel" as Model
+participant "EvidenceRouter" as Evidence
+database MongoDB as DB
+collections "uploads/" as Storage
+
+Estudiante -> UI : Registra actividad y horas
+UI -> API : POST /api/hours + JWT
+API -> Auth : Verifica rol y alcance de práctica
+Auth --> API : Autorizado
+API -> Model : Valida horas y referencias
+Model -> DB : insert (review_status=Pendiente)
+DB --> UI : 201 Created
+
+opt Adjunta evidencia PDF/imagen/documento
+  Estudiante -> UI : Selecciona archivo
+  UI -> Evidence : POST multipart /api/evidence + JWT
+  Evidence -> Auth : Verifica acceso a práctica
+  Evidence -> Storage : Guarda nombre aleatorio (máx. 10 MB)
+  Evidence -> DB : Guarda metadatos
+  DB --> UI : ID y enlace de descarga protegido
+end
+
+Asesor -> UI : Revisa horas asignadas
+UI -> API : PUT /api/hours/:id {review_status}
+API -> Auth : Comprueba rol asesor y práctica
+Auth --> API : Autorizado
+API -> DB : Actualiza estado de revisión
+DB --> UI : 200 OK
+@enduml
