@@ -50,6 +50,7 @@ Los documentos se guardan en `uploads/`, no en una carpeta pública. Configura a
 
 ## Entregables
 
+- Lista de cumplimiento de los 17 puntos: [`docs/ESTRUCTURA_ENTREGA.md`](docs/ESTRUCTURA_ENTREGA.md).
 - Tercer avance: `docs/entrega-tercer-avance.docx` y fuente Markdown asociada.
 - Manuales: `docs/manual-usuario.md` y `docs/manual-tecnico.md`.
 - Diagramas UML editables y modelo MongoDB: `docs/uml/` y `docs/modelo-relacional.md`.
