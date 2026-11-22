@@ -5,12 +5,12 @@
 **Semestre:** Quinto  
 **Periodo:** 2026–2  
 **Cursos vinculados:** Ingeniería del Software II, Programación III y Teoría General de Sistemas  
-**Equipo:** [Completar nombres y códigos]  
-**Institución:** [Completar nombre]  
-**Fecha de actualización:** 22 de noviembre de 2026, 12:29 (-05:00)  
+**Equipo:** Sergio Miguel Figueroa Delgado (código pendiente) y Gabriel Eduardo Mogollon Pedraza (código pendiente)\
+**Institución:** UDI\
+**Fecha de actualización:** 22 de noviembre de 2026, 3:02 p. m. (-05:00)\
 **Fecha límite indicada en la propuesta:** domingo 22 de noviembre de 2026, 11:30 p. m.
 
-> **Estado del documento:** esta versión actualiza el tercer avance con la migración de la persistencia a MongoDB y la incorporación en código de autenticación/roles, CRUD, evidencias privadas, visitas, validaciones e informes. Atlas, índices y los flujos API de integración (16 pruebas) se verificaron. Siguen pendientes la aceptación completa por perfil, las evidencias de interfaz, completar equipo/institución/URL pública, el artículo IEEE y el video antes de afirmar que la entrega está verificada.
+> **Estado del documento:** la conexión a MongoDB Atlas y la suite de integración se verificaron localmente: 16 pruebas aprobadas, 0 fallidas y 0 omitidas. La suite cubre los flujos API con cuenta administradora; siguen pendientes la aceptación con todos los perfiles, las evidencias de interfaz, el artículo IEEE y el video. El commit `a47d6f5` ya está publicado en la rama pública `main`.
 
 ## 1. Introducción
 
@@ -194,9 +194,9 @@ La interfaz contiene panel, gestión de recursos, sesiones, usuarios, visitas, v
 | T-10 | Consultar `/api/services?demo=1` con JWT | JSON con UUID, plataforma, archivo, ruta y parámetros |
 | T-11 | Intentar leer recursos sin JWT o modificar con rol incorrecto | HTTP 401/403; no hay cambio persistido |
 
-Las pruebas T-01 a T-11 describen criterios esperados; solo los escenarios indicados abajo cuentan con ejecución observada. `npm.cmd run db:check` conectó al clúster Atlas, hizo ping y creó/verificó los índices. Se corrigió el índice redundante de `_id` en `counters`. La apertura temporal de Network Access a `0.0.0.0/0` permitió alcanzar el servidor, pero deja la base accesible desde cualquier IP y debe reemplazarse cuanto antes por la IP de salida necesaria con máscara `/32`. Con el servidor activo y un administrador de bootstrap, `npm.cmd test` ejecutó 16 pruebas: 16 aprobadas, 0 fallidas y 0 omitidas. La integración HTTP verificó CRUD de datos de prueba, carga/descarga privada de PDF, visitas, validaciones, informes/CSV, rechazo anónimo y revocación del token; también confirmó que eliminar una fila de horas elimina su evidencia. No se cubrieron aún todos los roles ni la aceptación visual completa.
+Las pruebas T-01 a T-11 describen criterios esperados; la suite ejecutada cubre una parte. El 22 de noviembre de 2026, `npm.cmd run db:check` confirmó conexión con Atlas, ping y creación/verificación de índices. En esta máquina fue necesario iniciar Node con `NODE_OPTIONS=--use-system-ca` para confiar en el certificado de Windows; la verificación TLS permaneció activa. Con el servidor activo y una cuenta administradora aprovisionada, `npm.cmd test` pasó 16 pruebas: 16 aprobadas, 0 fallidas y 0 omitidas. La integración verificó CRUD de datos ficticios, carga y descarga privada de PDF, visitas, validaciones, informes/CSV, rechazo de acceso anónimo, revocación del token y eliminación de evidencia al borrar horas. No cubrió todos los roles ni la aceptación visual completa.
 
-Las pruebas de dominio están en `tests/models.test.js`; `tests/architecture.test.js` ejecuta casos de uso con repositorios falsos, sin MongoDB. El conjunto de integración `tests/api.test.js` cubre autenticación, CRUD, visitas, validaciones, informes y revocación del token cuando el entorno está preparado.
+Las pruebas de dominio están en `tests/models.test.js`; `tests/architecture.test.js` ejecuta casos de uso con repositorios falsos, sin MongoDB. El conjunto `tests/api.test.js` cubre login de administrador, CRUD, visitas, validaciones, informes, carga/descarga privada y revocación del token. El 22 de noviembre de 2026, `npm.cmd test` pasó 16/16 pruebas con ninguna omitida. En este equipo Node necesitó `NODE_OPTIONS=--use-system-ca` para confiar en el certificado instalado en Windows; la verificación TLS permaneció activa.
 
 ## 11. Programación III: cinco módulos nativos de Node.js
 
@@ -215,8 +215,8 @@ El endpoint de demostración `/api/services` utiliza módulos incorporados en No
 
 ## 12. Código y repositorio público
 
-**URL del repositorio GitHub:** [Agregar URL pública verificada]  
-**Rama o etiqueta de la entrega:** [Completar tras publicar]  
+**URL del repositorio GitHub:** https://github.com/sfigueroa4-creator/Proyecto2026 (público)\
+**Rama pública:** `main`, commit `a47d6f5`. **Versión release publicada:** [`v1.0.0`](https://github.com/sfigueroa4-creator/Proyecto2026/tree/v1.0.0), tag sobre el commit `a47d6f5`. El tag heredado `Demo` apunta a la versión anterior.\
 **Instrucciones de instalación:** `README.md` en la raíz del proyecto.
 
 No incluir credenciales reales, archivo `.env`, datos personales ni evidencias privadas en el repositorio público. Mantener `.env.example` con nombres de variables y valores ficticios.
@@ -236,11 +236,10 @@ La propuesta identifica el tercer avance como entrega final de la aplicación fu
 - **Arquitectura hexagonal:** casos de uso desacoplados con puertos/repositorios inyectados; adaptadores concretos separados para MongoDB, JWT, bcrypt y almacenamiento privado.
 - **Documentación técnica:** manuales, guía, diccionario MongoDB y diagramas de casos de uso, clases, secuencias, ER conceptual, componentes y despliegue.
 
-Estos elementos existen en el código y los archivos del proyecto, pero no se consideran verificados en producción. La conexión MongoDB y las pruebas integrales requieren completar `.env` y disponer de MongoDB.
+Estos elementos existen en el código y se verificaron localmente con MongoDB Atlas para los flujos cubiertos por las 16 pruebas. Esto no certifica el sistema para producción ni reemplaza la aceptación con cuentas de cada rol; siguen pendientes el endurecimiento operativo, los respaldos probados y la revisión institucional.
 
 ### 13.2 Paquetes de trabajo y criterios de salida
 
-| Orden | Paquete y esfuerzo estimado | Dependencia | Criterio de salida |
 | Orden | Paquete y esfuerzo estimado | Dependencia | Criterio de salida |
 |---|---|---|---|
 | 1 | Configurar MongoDB y secretos (15–30 min) | Acceso a Docker o MongoDB administrado | `/api/health` informa `status: ok` y `database: MongoDB`; secreto/credenciales privados |
@@ -249,7 +248,7 @@ Estos elementos existen en el código y los archivos del proyecto, pero no se co
 | 4 | Probar archivos e informes (20–40 min+) | Paquetes 2–3 | PDF permitido se carga/descarga con rol autorizado; reporte y CSV coherentes |
 | 5 | Completar evidencias y paquete académico (tiempo según equipo) | Paquetes 3–4 | Autores, URL pública, capturas, artículo IEEE, video y release verificados |
 
-La estimación preliminar anterior de 13–21 días-persona correspondía al desarrollo completo desde la línea base; en esta sesión se incorporó código para varios de esos paquetes, pero no se pudo validar contra MongoDB ni generar evidencia auténtica. No es responsable asegurar que todo el cierre sea realizable antes del vencimiento sin una ejecución inmediata del equipo.
+La estimación preliminar de 13–21 días-persona correspondía al desarrollo completo desde la línea base. La conexión a MongoDB y las pruebas de integración ya se ejecutaron; la aceptación por todos los perfiles, las evidencias visuales y los artefactos académicos finales todavía requieren trabajo del equipo.
 
 ### 13.3 Secuencia y calendario de referencia
 
@@ -257,10 +256,10 @@ La estimación preliminar anterior de 13–21 días-persona correspondía al des
 |---|---|---|
 | 22 de noviembre, inmediatamente | Iniciar MongoDB, completar `.env` sin compartir secretos, sembrar el administrador y comprobar health | API conectada y acceso administrador demostrado |
 | 22 de noviembre, a continuación | Ejecutar pruebas unitarias e integración; arreglar fallos críticos; probar una cuenta por rol y archivo | Salidas reales de pruebas y capturas sin datos reales |
-| 22 de noviembre, antes de las 11:00 a. m. si es posible | Terminar metadatos/URL, artículo IEEE, video, release y revisión del repositorio | Paquete revisado por el equipo |
+| 22 de noviembre, antes de las 11:00 p. m. si es posible | Completar códigos, artículo IEEE, video, publicar la versión y revisar el repositorio | Paquete revisado por el equipo |
 | 22 de noviembre, 11:30 p. m. | Límite de entrega informado en la propuesta | Entrega cargada en el medio oficial |
 
-La actualización de este documento es de las 12:29 (-05:00) del mismo día de entrega; restan aproximadamente 11 horas y 1 minuto para el límite de las 11:30 p. m. El calendario es una lista de contingencia, no evidencia de trabajo ya realizado. Si pruebas HTTP y artefactos no alcanzan a verificarse, informar el riesgo al docente y no presentar estados esperados como resultados. La sustentación final indicada en la propuesta es el 25 de noviembre para 5A y el 24 de noviembre para 5L/5LA; confirmar grupo y horario.
+La actualización original de este documento fue a las 12:29 (-05:00) del mismo día de entrega. La fecha límite indicada en la propuesta es el 22 de noviembre a las 11:30 p. m.; la sustentación es el 25 de noviembre para 5A y el 24 de noviembre para 5L/5LA. Confirmar grupo y horario oficial.
 
 ### 13.4 Definición de terminado
 
@@ -278,15 +277,15 @@ La entrega se considera lista únicamente cuando:
 
 | Riesgo o decisión | Acción de cierre |
 |---|---|
-| Tiempo limitado antes del límite de las 11:30 p. m. y pruebas en MongoDB pendientes | Priorizar configuración y pruebas críticas; avisar al docente si la verificación no es viable |
+| Aceptación por todos los perfiles, capturas y artefactos finales pendientes | Completar pruebas de roles/interfaz y adjuntar evidencia observada |
 | URI, usuario/clave MongoDB y `JWT_SECRET` dependen del entorno del equipo | Configurar localmente y excluir `.env`/secretos de Git |
 | MongoDB standalone no soporta las garantías transaccionales del borrado multidocumento | Usar replica set en producción; validar copias y restauración |
 | Meta de horas y reglas institucionales no confirmadas | Validar con el programa y marcar la meta ilustrativa como tal |
-| Repositorio público sin URL en el documento | Publicar, revisar contenido sensible y comprobar acceso sin iniciar sesión |
+| Versión publicada sin etiqueta de release | Crear la etiqueta después de validar los artefactos finales y actualizar el documento publicado |
 
 ### 13.6 Lista de entrega final
 
-- [ ] Completar nombres/códigos del equipo, institución y URL pública del repositorio.
+- [ ] Confirmar los códigos estudiantiles del equipo; los nombres, la institución y la URL pública ya están consignados.
 - [x] Incorporar diagramas de componentes y despliegue y actualizar UML/datos para MongoDB.
 - [x] Adjuntar manual de usuario y manual técnico; completar procedimiento de respaldo/restauración con el entorno destino.
 - [ ] Terminar el artículo IEEE en el rango de 5 a 8 páginas y verificar plantilla, referencias y figuras.
@@ -303,7 +302,7 @@ La conexión a MongoDB Atlas y los flujos API de CRUD, autorización anónima, a
 
 ## 15. Conclusiones y estado de preparación
 
-El código de este avance incorpora persistencia MongoDB configurable, conexión Atlas verificada con ping/índices, CRUD API probado, autenticación/roles, archivos privados, visitas, validaciones e informes y se acompaña de guía, manuales y diagramas. No obstante, falta la aceptación de todos los perfiles y de la interfaz, además de capturas, publicación y release. El artículo IEEE y video no están incluidos. Por ello, no se declara cumplido el 100 % de los casos ni lista para uso institucional sin una ejecución final satisfactoria.
+El código de este avance incorpora persistencia MongoDB configurable, conexión Atlas verificada con ping/índices, CRUD API probado, autenticación/roles, archivos privados, visitas, validaciones e informes y se acompaña de guía, manuales y diagramas. La suite actual pasó 16/16 pruebas, pero no cubre todos los perfiles ni la aceptación de la interfaz. El código está publicado en GitHub como `v1.0.0`. La aceptación de todos los perfiles y la evidencia visual no están cubiertas por las pruebas actuales. Por ello, no se declara cumplido el 100 % de los casos ni lista para uso institucional.
 
 ## 16. Referencias
 

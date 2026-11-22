@@ -160,6 +160,7 @@ function renderManagement() {
   }).join('');
   el('#record-count').textContent = `${rows.length} ${rows.length === 1 ? 'registro' : 'registros'}`;
   el('#empty-state').hidden = rows.length > 0;
+  el('#empty-add').hidden = !canWrite(resource, 'create');
   el('#management-body').hidden = rows.length === 0;
   el('#management-body').querySelectorAll('[data-edit]').forEach((button) => button.addEventListener('click', () => openDialog(resource, Number(button.dataset.edit))));
   el('#management-body').querySelectorAll('[data-delete]').forEach((button) => button.addEventListener('click', () => removeRow(resource, Number(button.dataset.delete))));
@@ -198,7 +199,7 @@ function setView(view) {
   const add = view !== 'reports' && definition && canWrite(view, 'create');
   el('#add-button').hidden = !add;
   el('#add-button').textContent = add ? `＋ Nuevo/a ${definition.singular}` : '';
-  el('#export-button').hidden = view === 'users' || view === 'reports';
+  el('#export-button').hidden = !definition || view === 'users';
   el('#search-input').value = '';
   el('#sidebar').classList.remove('sidebar-open');
   if (view === 'reports') renderReports().catch((error) => showToast(error.message, true));
